@@ -36,7 +36,7 @@ var CreateNewClient = tx.Transaction{
 		id, _ := req["id"].(string)
 
 		clientMap := make(map[string]interface{})
-		clientMap["@assetType"] = "library"
+		clientMap["@assetType"] = "person"
 		clientMap["id"] = id
 
 		clientAsset, err := assets.NewAsset(clientMap)
