@@ -9,48 +9,55 @@ import (
 	tx "github.com/goledgerdev/cc-tools/transactions"
 )
 
-// Create a new Library on channel
+// Create a new Store on channel
 // POST Method
-var CreateNewLibrary = tx.Transaction{
-	Tag:         "createNewLibrary",
-	Label:       "Create New Library",
-	Description: "Create a New Library",
+var CreateNewStore = tx.Transaction{
+	Tag:         "createNewStore",
+	Label:       "Create New Store",
+	Description: "Create a New Store",
 	Method:      "POST",
-	Callers:     []string{"$org3MSP"}, // Only org3 can call this transaction
 
 	Args: []tx.Argument{
 		{
-			Tag:         "name",
-			Label:       "Name",
-			Description: "Name of the library",
+			Tag:         "storeName",
+			Label:       "Store name",
+			Description: "Name of the Store",
 			DataType:    "string",
+			Required:    true,
+		},
+		{
+			Tag:         "owner",
+			Label:       "Owner",
+			Description: "Store's Owner",
+			DataType:    "->person",
 			Required:    true,
 		},
 	},
 	Routine: func(stub *sw.StubWrapper, req map[string]interface{}) ([]byte, errors.ICCError) {
-		name, _ := req["name"].(string)
+		name, _ := req["storeName"].(string)
+		owner, _ := req["owner"].(assets.Key)
 
-		libraryMap := make(map[string]interface{})
-		libraryMap["@assetType"] = "library"
-		libraryMap["name"] = name
+		storeMap := make(map[string]interface{})
+		storeMap["@assetType"] = "store"
+		storeMap["storeName"] = name
+		storeMap["owner"] = owner
 
-		libraryAsset, err := assets.NewAsset(libraryMap)
+		storeAsset, err := assets.NewAsset(storeMap)
 		if err != nil {
 			return nil, errors.WrapError(err, "Failed to create a new asset")
 		}
 
-		// Save the new library on channel
-		_, err = libraryAsset.PutNew(stub)
+		_, err = storeAsset.PutNew(stub)
 		if err != nil {
 			return nil, errors.WrapError(err, "Error saving asset on blockchain")
 		}
 
 		// Marshal asset back to JSON format
-		libraryJSON, nerr := json.Marshal(libraryAsset)
+		storeJSON, nerr := json.Marshal(storeAsset)
 		if nerr != nil {
 			return nil, errors.WrapError(nil, "failed to encode asset to JSON format")
 		}
 
-		return libraryJSON, nil
+		return storeJSON, nil
 	},
 }
