@@ -6,25 +6,20 @@ import (
 	"github.com/goledgerdev/cc-tools/assets"
 )
 
-var Person = assets.AssetType{
-	Tag:   "person",
-	Label: "Person",
+var Product = assets.AssetType{
+	Tag:         "product",
+	Label:       "Product",
+	Description: "Product from the shop.",
 
 	Props: []assets.AssetProp{
 		{
 			// Mandatory property
 			Required: true,
 			IsKey:    true,
-			Tag:      "id",
-			Label:    "CPF (Brazilian ID)",
-			DataType: "cpf",
-		},
-		{
-			// Mandatory property
-			Required: true,
-			Tag:      "name",
-			Label:    "Name",
+			Tag:      "productName",
+			Label:    "Product name",
 			DataType: "string",
+			// Validate funcion
 			Validate: func(name interface{}) error {
 				nameStr := name.(string)
 				if nameStr == "" {
@@ -32,6 +27,14 @@ var Person = assets.AssetType{
 				}
 				return nil
 			},
+		},
+		{
+			// Mandatory property
+			Required: true,
+			IsKey:    true,
+			Tag:      "productionBatch",
+			Label:    "Production Batch",
+			DataType: "integer",
 		},
 	},
 }
