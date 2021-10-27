@@ -16,6 +16,7 @@ var CreateNewStore = tx.Transaction{
 	Label:       "Create New Store",
 	Description: "Create a New Store",
 	Method:      "POST",
+	Callers:     []string{`$org\dMSP`}, // Any orgs can call this transaction
 
 	Args: []tx.Argument{
 		{
@@ -35,12 +36,26 @@ var CreateNewStore = tx.Transaction{
 	},
 	Routine: func(stub *sw.StubWrapper, req map[string]interface{}) ([]byte, errors.ICCError) {
 		name, _ := req["storeName"].(string)
-		owner, _ := req["owner"].(assets.Key)
+		ownerKey, ok := req["owner"].(assets.Key)
+		if !ok {
+			return nil, errors.WrapError(nil, "Parameter owner must be an asset")
+		}
 
 		storeMap := make(map[string]interface{})
+
+		ownerAsset, err := ownerKey.Get(stub)
+		if err != nil {
+			return nil, errors.WrapError(err, "failed to get asset from the ledger")
+		}
+		ownerMap := (map[string]interface{})(*ownerAsset)
+
+		updatedOwnerKey := make(map[string]interface{})
+		updatedOwnerKey["@assetType"] = "person"
+		updatedOwnerKey["@key"] = ownerMap["@key"]
+
 		storeMap["@assetType"] = "store"
 		storeMap["storeName"] = name
-		storeMap["owner"] = owner
+		storeMap["owner"] = updatedOwnerKey
 
 		storeAsset, err := assets.NewAsset(storeMap)
 		if err != nil {

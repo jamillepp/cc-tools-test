@@ -2,6 +2,7 @@ package txdefs
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/goledgerdev/cc-tools/assets"
 	"github.com/goledgerdev/cc-tools/errors"
@@ -15,8 +16,8 @@ var UpdateStorage = tx.Transaction{
 	Tag:         "updateStorage",
 	Label:       "Update storage",
 	Description: "Update the storage of some store",
-	Method:      "PUT",
-	Callers:     []string{`$org\dMSP`}, // Any orgs can call this transaction
+	Method:      "POST",
+	Callers:     []string{`$org1MSP`},
 
 	Args: []tx.Argument{
 		{
@@ -32,8 +33,8 @@ var UpdateStorage = tx.Transaction{
 			Required: true,
 		},
 		{
-			Tag:      "productionBatch",
-			Label:    "Production Batch",
+			Tag:      "productLot",
+			Label:    "Product Lot",
 			DataType: "string",
 			Required: true,
 		},
@@ -41,7 +42,7 @@ var UpdateStorage = tx.Transaction{
 	Routine: func(stub *sw.StubWrapper, req map[string]interface{}) ([]byte, errors.ICCError) {
 		storeKey, ok := req["store"].(assets.Key)
 		productName, _ := req["productName"].(string)
-		productionBatch, _ := req["productionBatch"].(string)
+		productLot, _ := req["productLot"].(string)
 
 		if !ok {
 			return nil, errors.WrapError(nil, "Parameter store must be an asset")
@@ -50,11 +51,16 @@ var UpdateStorage = tx.Transaction{
 		productMap := make(map[string]interface{})
 		productMap["@assetType"] = "product"
 		productMap["productName"] = productName
-		productMap["productionBatch"] = productionBatch
+		productMap["productLot"] = productLot
 
 		productAsset, err := assets.NewAsset(productMap)
 		if err != nil {
 			return nil, errors.WrapError(err, "Failed to create a new asset")
+		}
+
+		_, err = productAsset.PutNew(stub)
+		if err != nil {
+			return nil, errors.WrapError(err, "Error saving asset on blockchain")
 		}
 
 		storeAsset, err := storeKey.Get(stub)
@@ -62,19 +68,26 @@ var UpdateStorage = tx.Transaction{
 			return nil, errors.WrapError(err, "failed to get asset from the ledger")
 		}
 
-		storage := storeAsset.GetProp("storage").([]assets.Key)
-		storage = append(storage, assets.Key(productAsset))
+		storage, ok := storeAsset.GetProp("storage").([]interface{})
+		if !ok {
+			storage = make([]interface{}, 0)
+		}
 
-		storeAsset.Update(stub, map[string]interface{}{
+		storage = append(storage, productAsset)
+		fmt.Println(stub.WriteSet)
+		_, err = storeAsset.Update(stub, map[string]interface{}{
 			"storage": storage,
 		})
+		if err != nil {
+			return nil, errors.WrapError(err, "failed to update storage from store asset")
+		}
 
 		// Marshal asset back to JSON format
-		storeJSON, nerr := json.Marshal(storeAsset)
+		responseJSON, nerr := json.Marshal(storage)
 		if nerr != nil {
 			return nil, errors.WrapError(err, "failed to marshal response")
 		}
 
-		return storeJSON, nil
+		return responseJSON, nil
 	},
 }

@@ -9,7 +9,7 @@ import (
 var Product = assets.AssetType{
 	Tag:         "product",
 	Label:       "Product",
-	Description: "Product from the shop.",
+	Description: "Product from the store.",
 
 	Props: []assets.AssetProp{
 		{
@@ -32,9 +32,9 @@ var Product = assets.AssetType{
 			// Mandatory property
 			Required: true,
 			IsKey:    true,
-			Tag:      "productionBatch",
-			Label:    "Production Batch",
-			DataType: "integer",
+			Tag:      "productLot",
+			Label:    "Product lot",
+			DataType: "string",
 		},
 	},
 }
