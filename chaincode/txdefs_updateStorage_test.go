@@ -9,18 +9,17 @@ import (
 	"github.com/goledgerdev/cc-tools/mock"
 )
 
-func TestUpdateBookTenant(t *testing.T) {
+func TestUpdateStorage(t *testing.T) {
 	stub := mock.NewMockStub("org1MSP", new(CCDemo))
 
 	// State setup
 	setupPerson := map[string]interface{}{
-		"@key":         "person:47061146-c642-51a1-844a-bf0b17cb5e19",
-		"@lastTouchBy": "org1MSP",
-		"@lastTx":      "createAsset",
 		"@assetType":   "person",
-		"name":         "Maria",
-		"id":           "31820792048",
-		"height":       0.0,
+		"@key":         "person:820ae33f-37d1-5771-9ded-4aa4b5380752",
+		"@lastTouchBy": "org1MSP",
+		"@lastTx":      "createNewPerson",
+		"id":           "29490373052",
+		"name":         "Michael",
 	}
 	setupBook := map[string]interface{}{
 		"@key":         "book:a36a2920-c405-51c3-b584-dcd758338cb5",

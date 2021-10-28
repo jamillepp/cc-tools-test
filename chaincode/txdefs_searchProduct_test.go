@@ -9,7 +9,7 @@ import (
 	"github.com/goledgerdev/cc-tools/mock"
 )
 
-func TestGetNumberOfBooksFromLibrary(t *testing.T) {
+func TestSearchProduct(t *testing.T) {
 	stub := mock.NewMockStub("org2MSP", new(CCDemo))
 
 	// Setup state

@@ -14,4 +14,5 @@ var txList = []tx.Transaction{
 	txdefs.CreateNewStore,
 	txdefs.SearchProduct,
 	txdefs.UpdateStorage,
+	txdefs.GetStoreByOwner,
 }

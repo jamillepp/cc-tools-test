@@ -10,26 +10,34 @@ import (
 	"github.com/goledgerdev/cc-tools/mock"
 )
 
-func TestCreateNewLibrary(t *testing.T) {
-	stub := mock.NewMockStub("org3MSP", new(cc.CCDemo))
+func TestCreateNewStore(t *testing.T) {
+	stub := mock.NewMockStub("org1MSP", new(cc.CCDemo))
 
 	expectedResponse := map[string]interface{}{
-		"@key":         "library:3cab201f-9e2b-579d-b7b2-72297ed17f49",
-		"@lastTouchBy": "org3MSP",
-		"@lastTx":      "createNewLibrary",
-		"@assetType":   "library",
-		"name":         "Maria's Library",
+		"@assetType":   "store",
+		"@key":         "store:7b2334c5-a19f-59e4-8cb4-a9fb9e85329f",
+		"@lastTouchBy": "org1MSP",
+		"@lastTx":      "createNewStore",
+		"owner": map[string]interface{}{
+			"@assetType": "person",
+			"@key":       "person:820ae33f-37d1-5771-9ded-4aa4b5380752",
+		},
+		"storeName": "Michael's",
 	}
 	req := map[string]interface{}{
-		"name": "Maria's Library",
+		"storeName": "Michael's",
+		"owner": map[string]interface{}{
+			"@assetType": "person",
+			"@key":       "person:820ae33f-37d1-5771-9ded-4aa4b5380752",
+		},
 	}
 	reqBytes, err := json.Marshal(req)
 	if err != nil {
 		t.FailNow()
 	}
 
-	res := stub.MockInvoke("createNewLibrary", [][]byte{
-		[]byte("createNewLibrary"),
+	res := stub.MockInvoke("createNewStore", [][]byte{
+		[]byte("createNewStore"),
 		reqBytes,
 	})
 
@@ -53,7 +61,7 @@ func TestCreateNewLibrary(t *testing.T) {
 	}
 
 	var state map[string]interface{}
-	stateBytes := stub.State["library:3cab201f-9e2b-579d-b7b2-72297ed17f49"]
+	stateBytes := stub.State["store:7b2334c5-a19f-59e4-8cb4-a9fb9e85329f"]
 	err = json.Unmarshal(stateBytes, &state)
 	if err != nil {
 		log.Println(err)
