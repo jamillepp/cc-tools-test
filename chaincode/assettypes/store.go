@@ -19,15 +19,16 @@ var Store = assets.AssetType{
 			Label:    "Store name",
 			DataType: "string",
 			// Validate funcion
-			Validate: func(name interface{}) error {
-				nameStr := name.(string)
-				if nameStr == "" {
-					return fmt.Errorf("name must be non-empty")
+			Validate: func(storeName interface{}) error {
+				storeNameStr := storeName.(string)
+				if storeNameStr == "" {
+					return fmt.Errorf("storeName must be non-empty")
 				}
 				return nil
 			},
 		},
 		{
+			// Mandatory property
 			Required: true,
 			IsKey:    true,
 			Tag:      "owner",

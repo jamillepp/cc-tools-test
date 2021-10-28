@@ -20,10 +20,10 @@ var Product = assets.AssetType{
 			Label:    "Product name",
 			DataType: "string",
 			// Validate funcion
-			Validate: func(name interface{}) error {
-				nameStr := name.(string)
+			Validate: func(productName interface{}) error {
+				nameStr := productName.(string)
 				if nameStr == "" {
-					return fmt.Errorf("name must be non-empty")
+					return fmt.Errorf("productName must be non-empty")
 				}
 				return nil
 			},
@@ -35,6 +35,16 @@ var Product = assets.AssetType{
 			Tag:      "productLot",
 			Label:    "Product lot",
 			DataType: "string",
+			Validate: func(productLot interface{}) error {
+				productLotStr := productLot.(string)
+				if productLotStr == "" {
+					return fmt.Errorf("productLot must be non-empty")
+				}
+				if len(productLotStr) < 8 {
+					return fmt.Errorf("invalid productLot: size must be a least 8")
+				}
+				return nil
+			},
 		},
 	},
 }
