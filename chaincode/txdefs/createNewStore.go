@@ -56,6 +56,7 @@ var CreateNewStore = tx.Transaction{
 		storeMap["@assetType"] = "store"
 		storeMap["storeName"] = name
 		storeMap["owner"] = updatedOwnerKey
+		storeMap["storage"] = make([]interface{}, 0)
 
 		storeAsset, err := assets.NewAsset(storeMap)
 		if err != nil {

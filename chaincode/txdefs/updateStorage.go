@@ -69,7 +69,7 @@ var UpdateStorage = tx.Transaction{
 		}
 
 		storage, ok := storeAsset.GetProp("storage").([]interface{})
-		if !ok {
+		if !ok || storage == nil {
 			storage = make([]interface{}, 0)
 		}
 

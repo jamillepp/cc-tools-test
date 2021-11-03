@@ -9,4 +9,5 @@ var assetTypeList = []assets.AssetType{
 	assettypes.Product,
 	assettypes.Person,
 	assettypes.Store,
+	assettypes.Sale,
 }

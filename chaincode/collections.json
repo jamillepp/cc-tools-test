@@ -1,6 +1,6 @@
 [
   {
-    "name": "secret",
+    "name": "sale",
     "requiredPeerCount": 0,
     "maxPeerCount": 3,
     "blockToLive": 1000000,
@@ -10,13 +10,13 @@
         {
           "role": {
             "name": "member",
-            "mspId": "org2MSP"
+            "mspId": "org1MSP"
           }
         },
         {
           "role": {
             "name": "member",
-            "mspId": "org3MSP"
+            "mspId": "org2MSP"
           }
         }
       ],
